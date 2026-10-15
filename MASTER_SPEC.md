@@ -1,4 +1,4 @@
-# MASTER_SPEC — Chomkhao Accommodation Booking Website (same code as Phasakura)
+# MASTER_SPEC — Cherngdoi Accommodation Booking Website (same code as Phasakura)
 
 > เอกสารนี้คือ Source of Truth ของ Requirement ทั้งหมด
 > ส่วน **A** คือสถานะโปรเจกต์และการตัดสินใจทางเทคนิค (อัปเดตทุก Phase)
@@ -28,7 +28,7 @@
 | 14 | Security & Marketing (cookie consent + privacy policy page, GA4 + Meta Pixel gated by consent, Meta Conversions API outbox with event_id dedup, GA4 Data API dashboard numbers, request rate limits, CSP per tracker, audit, accessibility audit) | ✅ Done |
 | 15 | Testing (coverage matrix of the 28 areas, route security matrix over every endpoint, input fuzzing, concurrent model-based simulation of inventory invariants, snapshot immutability, deploy-order safety, i18n completeness, static checks, code coverage, browser suites in the repo + responsive sweep, CI) | ✅ Done |
 | 16 | Production (monitoring: health with schema + cron heartbeat, server error log, Admin → System status with 19 readiness checks; one canonical host; preflight, release, D1 backup, post-deploy smoke test; production runbook; readiness report) | ✅ Done |
-| 17 | App-usage credits (Chomkhao): per-unit fee on every booking, credit balance with hold / capture / release, top-up requests (manual or EasySlip), Standard / Premium plan, low / empty notices by e-mail + LINE, "My account" LINE link, printable statement | ✅ Done |
+| 17 | App-usage credits (Cherngdoi): per-unit fee on every booking, credit balance with hold / capture / release, top-up requests (manual or EasySlip), Standard / Premium plan, low / empty notices by e-mail + LINE, "My account" LINE link, printable statement | ✅ Done |
 
 ### A.2 Architecture Decisions (ADR)
 

@@ -1,4 +1,4 @@
-# Chomkhao — Production Runbook
+# Cherngdoi — Production Runbook
 
 คู่มือนำระบบขึ้นใช้งานจริงและดูแลหลังเปิด (Phase 16) — ใช้คู่กับ `README.md` (ขั้นตอนตั้งค่า LINE / GA4 / Meta อย่างละเอียด)
 
@@ -14,37 +14,38 @@
 | Admin → **สถานะระบบ** | ความพร้อม 19 ข้อ, health, งานเบื้องหลัง (cron), งานค้าง, ข้อผิดพลาดล่าสุด (สิทธิ์ `system.view`: SUPER_ADMIN, MANAGER) |
 | `GET /api/health` | สำหรับ Uptime monitor: 200 = ปกติ, 503 = ฐานข้อมูล / schema / cron มีปัญหา |
 
-## สถานะ chomkhao.com (อัปเดต 2026-10-14)
+## สถานะ cherngdoi.com (อัปเดต 2026-10-15)
 
-Chomkhao คัดลอกมาจากโค้ด Phasakura (ประวัติ Git เดิมยังอยู่ — ดึงการแก้ไขจาก Phasakura มาได้ ดูหัวข้อ "รับการแก้ไขจาก Phasakura")
-ใช้บัญชี Cloudflare เดียวกัน แต่ Worker, D1, R2, secret และข้อมูลแยกกันทั้งหมด — ไม่มีข้อมูลการจอง / ลูกค้าของ Phasakura ติดมา
+Cherngdoi คัดลอกมาจากโค้ด Chomkhao (ซึ่งคัดลอกมาจาก Phasakura อีกทอด — ประวัติ Git เดิมยังอยู่ ดึงการแก้ไขมาได้
+ดูหัวข้อ "รับการแก้ไขจาก Chomkhao / Phasakura") ใช้บัญชี Cloudflare เดียวกัน แต่ Worker, D1, R2, secret และข้อมูล
+แยกกันทั้งหมด — ไม่มีข้อมูลการจอง / ลูกค้า / ที่พักของ Chomkhao หรือ Phasakura ติดมา
 
 | รายการ | สถานะ |
 |---|---|
-| โดเมน `chomkhao.com` | zone อยู่บน Cloudflare แล้ว — Custom Domain (apex + www) สร้าง DNS / ใบรับรองให้ตอน deploy ครั้งแรก (www → 301 ไป apex) |
-| D1 `chomkhao-db` | สร้างแล้ว 2026-10-14 (APAC, id `227e945a-ca93-4749-a92a-08c959bb3485`) — schema ครบ 0001–0026 (94 ตาราง, 101 index, 44 trigger) + ข้อมูลตั้งต้น (ภาษา, บทบาท, สิทธิ์, ค่าตั้งต้น) ตรวจด้วย fingerprint เทียบกับไฟล์ migration ตรงกันทุกไบต์ (schema 95,712 bytes, seed 13,617 bytes), `d1_migrations` 26 แถว — ฐานข้อมูลว่าง ไม่มีการจอง / ที่พัก |
-| R2 | `chomkhao-media-public`, `chomkhao-media-private` สร้างแล้ว 2026-10-14 |
-| `wrangler.jsonc` | `name: chomkhao`, `APP_BASE_URL=https://chomkhao.com`, routes `chomkhao.com` + `www.chomkhao.com`, rate limit `namespace_id` 2001–2004 (Phasakura ใช้ 1001–1004 ในบัญชีเดียวกัน), `workers_dev: false` — `npm run preflight` 0 error |
+| โดเมน `cherngdoi.com` | ต้องเป็น zone ที่ Active บน Cloudflare บัญชีนี้ — Custom Domain (apex + www) สร้าง DNS / ใบรับรองให้ตอน deploy ครั้งแรก (www → 301 ไป apex) |
+| D1 `cherngdoi-db` | สร้างแล้ว 2026-10-15 (APAC, id `40c3d290-6f1a-40fc-93f5-6dd852d8d81c`) — schema ครบ 0001–0029 (100 ตาราง + `d1_migrations`, 111 index, 55 trigger) + ข้อมูลตั้งต้น (ภาษา 3, บทบาท 6, สิทธิ์ 59, role_permissions 168, ค่าตั้งต้น 7 ตาราง) ตรวจเทียบกับการ apply ไฟล์ migration ในเครื่องแล้วตรงกัน (D1 ตัด comment ใน `CREATE TABLE` ออกตอนเก็บ ส่วนอื่นตรงทุกไบต์), `d1_migrations` 29 แถว — ฐานข้อมูลว่าง ไม่มีการจอง / ที่พัก |
+| R2 | `cherngdoi-media-public`, `cherngdoi-media-private` สร้างแล้ว 2026-10-15 |
+| `wrangler.jsonc` | `name: cherngdoi`, `APP_BASE_URL=https://cherngdoi.com`, routes `cherngdoi.com` + `www.cherngdoi.com`, rate limit `namespace_id` 4001–4004 (ในบัญชีเดียวกัน Phasakura ใช้ 1001–1004, Chomkhao 2001–2004, เว้น 3001–3004 ให้ Suanpho), `workers_dev: false` |
 | SUPER_ADMIN คนแรก | `suriya.rth@gmail.com` (รหัสผ่านชั่วคราว — ต้องเปลี่ยนตอนเข้าครั้งแรก) |
-| โค้ด | GitHub `nujtee/Chomkhao` (branch `main`) |
-| Worker | มี Worker ชื่อ `chomkhao` (Hello world) สร้างไว้แล้ว — deploy แรกจาก Workers Builds จะแทนที่ |
+| โค้ด | GitHub `nujtee/cherngdoi` (branch `main`) |
+| Worker | มี Worker ชื่อ `cherngdoi` (Hello world) สร้างไว้แล้ว — deploy แรกจาก Workers Builds จะแทนที่ |
 | Deploy | **Workers Builds** — ต้องเชื่อม repo ครั้งเดียว (หัวข้อถัดไป); หลังจากนั้นทุก push เข้า `main` จะ build + deploy อัตโนมัติ |
-| Secrets | ยังไม่ได้ตั้ง — ใช้บัญชีของ Chomkhao เอง (LINE OA, EasySlip, Zoho Mail, PayPal, Meta, GA4) ไม่ใช้ร่วมกับ Phasakura (ข้อ 4) |
-| Workers Paid | บัญชีเดียวกับ Phasakura |
+| Secrets | ยังไม่ได้ตั้ง — ใช้บัญชีของ Cherngdoi เอง (LINE OA, EasySlip, Zoho Mail, PayPal, Meta, GA4) ไม่ใช้ร่วมกับเว็บอื่น (ข้อ 4) |
+| Workers Paid | บัญชีเดียวกับ Phasakura / Chomkhao |
 
 ### เชื่อม GitHub → Cloudflare (ครั้งเดียว)
 
-Dashboard → **Workers & Pages** → Worker **`chomkhao`** → **Settings** → **Build** → **Connect** → GitHub → เลือก `nujtee/Chomkhao`
+Dashboard → **Workers & Pages** → Worker **`cherngdoi`** → **Settings** → **Build** → **Connect** → GitHub → เลือก `nujtee/cherngdoi`
 (หรือ **Create application** → **Import a repository** ถ้ายังไม่มี Worker ชื่อนี้)
 
 | ช่อง | ค่า |
 |---|---|
-| Project name | `chomkhao` (ต้องตรงกับ `name` ใน wrangler.jsonc) |
+| Project name | `cherngdoi` (ต้องตรงกับ `name` ใน wrangler.jsonc) |
 | Build command | `npm run build` |
 | Deploy command | `npx wrangler deploy` |
 | Root directory | `/` |
 
-กด **Save and Deploy** — build ครั้งแรก ~2–4 นาที แล้ว `https://chomkhao.com` ใช้งานได้
+กด **Save and Deploy** — build ครั้งแรก ~2–4 นาที แล้ว `https://cherngdoi.com` ใช้งานได้
 
 ### Migration ครั้งต่อไป
 
@@ -64,17 +65,18 @@ API token อัตโนมัติของ Workers Builds **ไม่มี�
 - ผู้ใช้หลังบ้านแต่ละคนผูก LINE ของตัวเองได้ที่ **บัญชีของฉัน** (มุมขวาบน) เพื่อรับแจ้งเตือนเครดิตทาง LINE
 - Phasakura ไม่ได้รับผลกระทบ (คนละ repo / คนละฐานข้อมูล) ถ้า merge โค้ดนี้ไปที่นั่น ระบบก็ปิดอยู่จนกว่าจะเปิดเอง
 
-### รับการแก้ไขจาก Phasakura
+### รับการแก้ไขจาก Chomkhao / Phasakura
 
-โค้ดสองเว็บเหมือนกัน ต่างกันแค่ค่าตั้ง (`wrangler.jsonc`, `package.json`), ข้อความชื่อเว็บไม่กี่จุด และเอกสาร
+โค้ดทุกเว็บเหมือนกัน ต่างกันแค่ค่าตั้ง (`wrangler.jsonc`, `package.json`), ข้อความชื่อเว็บไม่กี่จุด และเอกสาร
 (ตัวระบุภายใน เช่น header `X-Requested-With: phasakura` และชื่อ key ใน localStorage คงไว้เหมือนเดิมโดยตั้งใจ เพื่อให้รวมการแก้ไขได้ง่าย)
 
 ```bash
+git remote add chomkhao https://github.com/nujtee/Chomkhao.git    # ครั้งเดียว (ต้นทางโดยตรง)
 git remote add upstream https://github.com/nujtee/Phasakura.git   # ครั้งเดียว
-git fetch upstream && git merge upstream/main                      # แก้ conflict เฉพาะไฟล์ค่าตั้ง / เอกสาร
+git fetch chomkhao && git merge chomkhao/main                      # แก้ conflict เฉพาะไฟล์ค่าตั้ง / เอกสาร
 ```
 
-ถ้าการแก้ไขนั้นมี migration ใหม่ ต้อง apply ลง `chomkhao-db` ก่อน push (เหมือนหัวข้อด้านบน)
+ถ้าการแก้ไขนั้นมี migration ใหม่ ต้อง apply ลง `cherngdoi-db` ก่อน push (เหมือนหัวข้อด้านบน)
 
 ---
 
@@ -94,11 +96,11 @@ npm ci
 npx wrangler login
 
 # D1 (ใกล้ผู้ใช้ในไทย: apac) → คัด database_id ไปใส่ wrangler.jsonc
-npx wrangler d1 create chomkhao-db --location=apac
+npx wrangler d1 create cherngdoi-db --location=apac
 
 # R2: สอง bucket — ห้ามเปิด Public access / r2.dev ของ bucket private (สลิปโอนเงิน)
-npx wrangler r2 bucket create chomkhao-media-public
-npx wrangler r2 bucket create chomkhao-media-private
+npx wrangler r2 bucket create cherngdoi-media-public
+npx wrangler r2 bucket create cherngdoi-media-private
 ```
 
 แก้ `wrangler.jsonc`:
@@ -116,7 +118,7 @@ npx wrangler r2 bucket create chomkhao-media-private
 npm run preflight                       # ต้อง 0 error
 npm run db:migrate:remote               # สร้างตารางทั้งหมด (0001–0020)
 npm run admin:bootstrap -- --email owner@your-domain.com --name "Owner" --out bootstrap.sql
-npx wrangler d1 execute chomkhao-db --remote --file bootstrap.sql
+npx wrangler d1 execute cherngdoi-db --remote --file bootstrap.sql
 rm bootstrap.sql                        # มี hash รหัสผ่าน — ห้าม commit (อยู่ใน .gitignore แล้ว)
 npm run deploy                          # preflight + build + wrangler deploy
 npm run smoke -- https://www.your-domain.com
@@ -163,7 +165,7 @@ npx wrangler secret list            # ดูได้แค่ชื่อ
 
 ### อีเมลผ่าน Zoho Mail
 
-ส่งจากกล่อง Zoho Mail ของโดเมน (เช่น booking@chomkhao.com) ผ่าน Zoho Mail API — SPF / DKIM ของ Zoho ที่ตั้งไว้แล้ว
+ส่งจากกล่อง Zoho Mail ของโดเมน (เช่น booking@cherngdoi.com) ผ่าน Zoho Mail API — SPF / DKIM ของ Zoho ที่ตั้งไว้แล้ว
 ครอบคลุมอยู่ ไม่ต้องเพิ่ม DNS
 
 1. login https://api-console.zoho.com ด้วยบัญชีของกล่องที่จะใช้ส่ง → **Self Client** → CREATE → คัด Client ID / Client Secret
@@ -223,23 +225,23 @@ Google: สร้าง key ใหม่แล้วลบ key เก่า) →
 
 ```bash
 # A) ย้อนเวลา (ภายใน 30 วัน) — ทับฐานข้อมูลเดิม, query ที่กำลังทำงานถูกยกเลิก, ข้อมูลหลังเวลานั้นหาย
-npx wrangler d1 time-travel info chomkhao-db --timestamp="2027-01-10T03:00:00+07:00"   # ดู bookmark ของเวลานั้น
+npx wrangler d1 time-travel info cherngdoi-db --timestamp="2027-01-10T03:00:00+07:00"   # ดู bookmark ของเวลานั้น
 npm run db:backup                                                                      # เก็บสถานะปัจจุบันไว้ก่อนเสมอ
-npx wrangler d1 time-travel restore chomkhao-db --bookmark=<bookmark>
+npx wrangler d1 time-travel restore cherngdoi-db --bookmark=<bookmark>
 # คำสั่ง restore คืน bookmark ก่อนกู้ — ใช้ย้อนกลับได้ถ้ากู้ผิดจุด
 
 # B) จากไฟล์ export (ฐานข้อมูลใหม่แล้วสลับ)
-npx wrangler d1 create chomkhao-restore --location=apac
-npx wrangler d1 execute chomkhao-restore --remote --file backups/chomkhao-db-YYYYMMDDTHHMMSSZ.sql
-npx wrangler d1 migrations list chomkhao-restore --remote     # ต้องไม่มี migration ค้าง
+npx wrangler d1 create cherngdoi-restore --location=apac
+npx wrangler d1 execute cherngdoi-restore --remote --file backups/cherngdoi-db-YYYYMMDDTHHMMSSZ.sql
+npx wrangler d1 migrations list cherngdoi-restore --remote     # ต้องไม่มี migration ค้าง
 # ตรวจข้อมูล → ใส่ database_id ใหม่ใน wrangler.jsonc → npm run deploy
 ```
 
 หลังกู้: การจองที่เกิดหลังจุดกู้คืนต้องตรวจกับสลิป / LINE log / อีเมลด้วยมือ แล้วบันทึกใหม่
 
 **R2 ด้วย rclone**: R2 → Manage R2 API Tokens → สร้าง token แบบ *Object Read only* เฉพาะ 2 bucket →
-ตั้ง remote ชนิด S3 provider Cloudflare ใน rclone → `rclone sync r2:chomkhao-media-private <ที่เก็บเข้ารหัส>/slips`
-และ `rclone sync r2:chomkhao-media-public <ที่เก็บ>/media` (สัปดาห์ละครั้ง)
+ตั้ง remote ชนิด S3 provider Cloudflare ใน rclone → `rclone sync r2:cherngdoi-media-private <ที่เก็บเข้ารหัส>/slips`
+และ `rclone sync r2:cherngdoi-media-public <ที่เก็บ>/media` (สัปดาห์ละครั้ง)
 
 ## 7. Monitoring
 
@@ -247,7 +249,7 @@ npx wrangler d1 migrations list chomkhao-restore --remote     # ต้องไ�
 |---|---|---|
 | เว็บล่ม / ฐานข้อมูล / schema / cron | Uptime monitor (บริการใดก็ได้) เรียก `https://www.your-domain.com/api/health` ทุก 1–5 นาที แจ้งเตือนเมื่อไม่ใช่ 200 | ดูตารางเหตุขัดข้องข้อ 9 |
 | ความพร้อม, งานค้าง, cron, error 24 ชม. | Admin → สถานะระบบ (ดูทุกเช้า) | ทำตามข้อความ "วิธีแก้" ของแต่ละรายการ |
-| ข้อผิดพลาดของเซิร์ฟเวอร์ | Admin → สถานะระบบ → ข้อผิดพลาดล่าสุด (เก็บ 30 วัน) และ Cloudflare → Workers & Pages → chomkhao → Observability / Logs (7 วัน, ค้นด้วย Request ID) | Request ID เดียวกันอยู่ใน header `X-Request-Id` ของทุก API response |
+| ข้อผิดพลาดของเซิร์ฟเวอร์ | Admin → สถานะระบบ → ข้อผิดพลาดล่าสุด (เก็บ 30 วัน) และ Cloudflare → Workers & Pages → cherngdoi → Observability / Logs (7 วัน, ค้นด้วย Request ID) | Request ID เดียวกันอยู่ใน header `X-Request-Id` ของทุก API response |
 | ส่ง LINE / CAPI ไม่สำเร็จ | Settings → LINE → Delivery log, Marketing → CAPI | ตรวจ secret / token หมดอายุ แล้ว Retry |
 | การเข้าสู่ระบบผิดปกติ, rate limit | Administration → Security events | ระงับผู้ใช้ / บังคับออกจากระบบ |
 | ใครแก้อะไร | Administration → Audit logs | — |

@@ -63,5 +63,5 @@ export function reportToXlsx(report: ReportDto, lang: LocaleCode, siteName: stri
 }
 
 export function reportFileName(report: ReportDto, ext: string): string {
-  return `chomkhao-${report.type}-${report.from}_${report.to}.${ext}`;
+  return `cherngdoi-${report.type}-${report.from}_${report.to}.${ext}`;
 }

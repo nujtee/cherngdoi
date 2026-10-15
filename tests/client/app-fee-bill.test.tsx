@@ -42,7 +42,7 @@ describe("app usage fee — guest side", () => {
 
 describe("printable statement (ใบแจ้งยอด)", () => {
   it("is labelled as a statement, not a tax invoice, with the fee, total, paid and balance", () => {
-    const html = renderToStaticMarkup(<BillDocument booking={booking} lang="th" siteName="Chomkhao" phone="xxx-xxx-5678" onClose={() => undefined} />);
+    const html = renderToStaticMarkup(<BillDocument booking={booking} lang="th" siteName="Cherngdoi" phone="xxx-xxx-5678" onClose={() => undefined} />);
     assert.match(html, /<h1 id="bill-title" class="bill__title">ใบแจ้งยอด<\/h1>/);
     assert.match(html, /ไม่ใช่ใบกำกับภาษี/);
     assert.match(html, /BK-20270110-AB12/);
