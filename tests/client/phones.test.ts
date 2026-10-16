@@ -11,6 +11,7 @@ describe("contact phone list", () => {
   it("normalizes to 'a, b' and rejects malformed or too many numbers", () => {
     assert.equal(normalizePhoneList("0637951218,0955790679"), "0637951218, 0955790679");
     assert.equal(normalizePhoneList("+66 63 795 1218; 095 579 0679"), "+66 63 795 1218, 095 579 0679");
+    assert.equal(normalizePhoneList("063 795 1218 / 095 579 0679"), "063 795 1218, 095 579 0679");
     assert.equal(normalizePhoneList("0637951218, call me"), null);
     assert.equal(normalizePhoneList("------"), null);
     assert.equal(normalizePhoneList(Array(6).fill("0812345678").join(",")), null);

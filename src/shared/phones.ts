@@ -1,11 +1,11 @@
 /**
  * The site's contact phone can hold several numbers in one field, e.g. "063 795 1218, 095 579 0679".
- * Numbers are separated by a comma (also ";" or the Thai / Chinese full-width comma); each number on its
+ * Numbers are separated by a comma (also ";", "/" or the Thai / Chinese full-width comma); each number on its
  * own must look like a phone number. Stored as one string, numbers joined by ", ".
  */
 export const MAX_PHONES = 5;
 const ONE_PHONE = /^[0-9+()\- ]{6,30}$/;
-const SEPARATOR = /[,;，、]/;
+const SEPARATOR = /[,;，、/]/;
 
 /** Split the stored value into its numbers (empty parts dropped). */
 export function splitPhones(value: string | null | undefined): string[] {
