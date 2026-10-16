@@ -6,6 +6,7 @@ import { IMAGE_SIZES } from "../../shared/media-types.ts";
 import { accommodationPath, pagePath } from "../../shared/routes.ts";
 import { fill } from "../accommodation/UnitCard.tsx";
 import { EmptyState } from "../components/EmptyState.tsx";
+import { PhoneLinks } from "../components/PhoneLinks.tsx";
 import { HeroSlideshow } from "../content/HeroSlideshow.tsx";
 import { ResponsiveImage } from "../content/ResponsiveImage.tsx";
 import { SmartLink } from "../content/SmartLink.tsx";
@@ -190,7 +191,7 @@ function Contact({ s }: { s: PublicSectionDto }) {
       <SectionHead id={id} title={s.title ?? ct.home.contact} />
       <Text s={s} />
       <dl className="contact-list">
-        {c?.phone && <><dt>{ct.home.phone}</dt><dd><a href={`tel:${c.phone.replace(/[^\d+]/g, "")}`}>{c.phone}</a></dd></>}
+        {c?.phone && <><dt>{ct.home.phone}</dt><dd><PhoneLinks value={c.phone} /></dd></>}
         {c?.email && <><dt>{ct.home.email}</dt><dd><a href={`mailto:${c.email}`}>{c.email}</a></dd></>}
         {c?.lineOaUrl && <><dt>{ct.home.line}</dt><dd><a href={c.lineOaUrl} target="_blank" rel="noopener noreferrer">{c.lineOaUrl.replace(/^https:\/\//, "")}</a></dd></>}
         {c?.address && <><dt>{ct.home.address}</dt><dd>{c.address}</dd></>}

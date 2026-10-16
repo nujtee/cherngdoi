@@ -46,6 +46,18 @@ describe("website settings & branding (spec §36–37)", () => {
     assert.equal(pub.footerText, "ข้อความท้ายเว็บ", "falls back to the default language");
     assert.equal(pub.contact.phone, "081-234-5678");
 
+    // Several numbers in one field (comma-separated) are kept, tidied to "a, b"; a malformed one is rejected.
+    const two = await h.api<WebsiteSettingsDto>("PUT", "/api/admin/settings/website", {
+      token: web, body: { contactPhone: "0637951218,0955790679 ", translations: { th: { siteName: "บ้านทดสอบ" } } },
+    });
+    assert.equal(two.status, 200, JSON.stringify(two.body));
+    assert.equal(two.data.contactPhone, "0637951218, 0955790679");
+    assert.equal((await site(h)).contact.phone, "0637951218, 0955790679");
+    for (const bad of ["0637951218, abc", "0637951218,,x12", "1, 2, 3, 4, 5, 6".replace(/\d/g, "081-234-5678")]) {
+      const r = await h.api("PUT", "/api/admin/settings/website", { token: web, body: { contactPhone: bad } });
+      assert.equal(r.error?.details?.contactPhone, "INVALID_FORMAT", bad);
+    }
+
     const brand = await staff(h, ["settings.branding"]);
     assert.equal((await h.api("PUT", "/api/admin/settings/branding", { token: web, body: { logoMain: null } })).status, 403);
     const logo = await image(h, brand, "LOGO");

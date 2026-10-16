@@ -18,8 +18,8 @@ import type { SecurityLogService } from "./security-log.service.ts";
 import { ctaPages, fontFaces } from "./site.service.ts";
 import type { FontRepository } from "../repositories/font.repository.ts";
 import type { PublicFontFaceDto } from "../../shared/media-types.ts";
+import { normalizePhoneList } from "../../shared/phones.ts";
 
-const PHONE = /^[0-9+()\- ]{6,30}$/;
 const GA4_ID = /^G-[A-Z0-9]{4,20}$/;
 const PIXEL_ID = /^\d{5,20}$/;
 const GSC_TOKEN = /^[A-Za-z0-9_-]{10,100}$/;
@@ -82,7 +82,10 @@ export class SettingsService {
   async saveWebsite(actor: AuthContext, body: Body, meta: RequestMeta): Promise<WebsiteSettingsDto> {
     await this.authz.requirePermission(actor, "settings.website", meta);
     const v = new Validator(body).allowOnly(["contactPhone", "contactEmail", "lineOaUrl", "mapUrl", "latitude", "longitude", "translations"]);
-    const contactPhone = v.string("contactPhone", { pattern: PHONE }) ?? null;
+    // Several numbers allowed, comma-separated ("063 795 1218, 095 579 0679"); stored as "a, b".
+    const phoneInput = v.string("contactPhone", { max: 200 });
+    const contactPhone = phoneInput === undefined || v.errors.contactPhone ? null : normalizePhoneList(phoneInput);
+    if (phoneInput !== undefined && !v.errors.contactPhone && contactPhone === null) v.errors.contactPhone = "INVALID_FORMAT";
     const contactEmail = v.email("contactEmail") ?? null;
     const lineOaUrl = httpsUrl(v, "lineOaUrl");
     const mapUrl = httpsUrl(v, "mapUrl");
